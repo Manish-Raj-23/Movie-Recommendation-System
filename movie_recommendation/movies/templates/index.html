@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netflix Clone</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        h1 {
+            color: red;
+        }
+        .movie-card {
+            background-color: #222;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .movie-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+        .watch-btn {
+            margin-top: 10px;
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center">MOVIE RECCOMENDATION SYSTEM</h1>
+
+        <div class="mb-4">
+            <input type="text" id="search-bar" class="form-control" placeholder="Search movies..." onkeyup="searchMovies()">
+        </div>
+
+        <div class="movie-section">
+            <h2>Recommended Movies</h2>
+            <div class="row" id="recommended"></div>
+        </div>
+
+        <div class="movie-section">
+            <h2>New Movies</h2>
+            <div class="row" id="new-movies"></div>
+        </div>
+
+        <div class="movie-section">
+            <h2>Yet to Watch</h2>
+            <div class="row" id="yet-to-watch"></div>
+        </div>
+
+        <div class="movie-section">
+            <h2>Favorite Movies</h2>
+            <div class="row" id="favorites"></div>
+        </div>
+    </div>
+
+    <script>
+    async function fetchMovies() {
+        const response = await fetch('/movies/'); // Django API Endpoint
+        const moviesData = await response.json();
+        return moviesData.movies; // Get movies array
+    }
+
+    async function populateMovies() {
+        const movies = await fetchMovies();
+        populateSection("recommended", movies.slice(0, 4));  // Example: First 4 movies
+        populateSection("new-movies", movies.slice(4, 8));
+        populateSection("yet-to-watch", movies.slice(8, 12));
+        populateSection("favorites", movies.slice(12, 16));
+    }
+
+    function populateSection(sectionId, movies) {
+        const section = document.getElementById(sectionId);
+        section.innerHTML = "";
+        movies.forEach(movie => {
+            const movieCard = document.createElement("div");
+            movieCard.classList.add("col-md-3", "mb-3");
+            movieCard.innerHTML = `
+                <div class="movie-card">
+                    <img src="${movie.poster}" alt="${movie.title}">
+                    <h3>${movie.title}</h3>
+                    <p><strong>Director:</strong> ${movie.director}</p>
+                    <p><strong>Rating:</strong> ⭐${movie.rating}/10</p>
+                    <p>${movie.description}</p>
+                    <button class="watch-btn">Watch Now</button>
+                </div>
+            `;
+            section.appendChild(movieCard);
+        });
+    }
+
+    function searchMovies() {
+        const searchText = document.getElementById("search-bar").value.toLowerCase();
+        document.querySelectorAll(".movie-card").forEach(card => {
+            const title = card.querySelector("h3").textContent.toLowerCase();
+            card.parentElement.style.display = title.includes(searchText) ? "block" : "none";
+        });
+    }
+
+    populateMovies();
+</script>
+
+</body>
+</html>

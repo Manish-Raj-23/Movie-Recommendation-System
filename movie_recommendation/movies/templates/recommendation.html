@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recommended Movies</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body { background-color: black; color: white; font-family: Arial, sans-serif; }
+        h1 { color: red; text-align: center; margin-top: 20px; }
+        .movie-card { background-color: #222; padding: 10px; border-radius: 5px; text-align: center; margin-bottom: 20px; transition: transform 0.3s ease-in-out; }
+        .movie-card:hover { transform: scale(1.05); }
+        .movie-card img { width: 100%; height: 250px; object-fit: cover; border-radius: 5px; }
+        .movie-card p { font-size: 14px; color: #ccc; }
+        .rating { font-weight: bold; color: yellow; }
+    </style>
+</head>
+<body>
+    <h1>Recommended Movies</h1>
+
+    <div class="container">
+        <div class="row">
+            {% for movie in movies %}
+            <div class="col-md-3">
+                <div class="movie-card">
+                    <img src="{{ movie.Poster_Link }}" alt="{{ movie.Series_Title }}">
+                    <h3>{{ movie.Series_Title }}</h3>
+                    <p>{{ movie.Overview }}</p>
+                    <p class="rating">⭐ {{ movie.IMDB_Rating }}/10</p>
+                </div>
+            </div>
+            {% empty %}
+            <p>No recommendations found.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+</body>
+</html>
